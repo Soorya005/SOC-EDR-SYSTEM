@@ -1,0 +1,1 @@
+Write-Host "Sysmon installation script placeholder"

@@ -1,0 +1,1 @@
+ALERT_TRIAGE_PROMPT = "Summarize the alert and suggest the next investigation step."
