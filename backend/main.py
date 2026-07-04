@@ -28,8 +28,29 @@ app.add_middleware(
 app.include_router(events.router)
 app.include_router(alerts.router)
 app.include_router(stats.router)
+from database.db import get_connection
+
+@app.get("/health", tags=["Health"])
+def health():
+    try:
+        conn = get_connection()
+        conn.execute("SELECT 1")
+        conn.close()
+
+        return {
+            "status": "healthy",
+            "database": "connected"
+        }
+
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "database": "disconnected",
+            "error": str(e)
+        }
 @app.get("/")
 def root():
     return {
         "message": "SOC EDR Backend Running"
     }
+
