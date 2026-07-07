@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EDRDashboard (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "EDRDashboard (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

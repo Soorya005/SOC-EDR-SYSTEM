@@ -1,0 +1,106 @@
+<Page
+    x:Class="EDRDashboard.Views.ReportsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="24">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+
+            <TextBlock
+                Text="Reports"
+                FontSize="32"
+                FontWeight="Bold"/>
+
+            <TextBlock
+                Margin="0,5,0,0"
+                Text="Generated security and investigation reports"
+                Opacity="0.7"/>
+
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Margin="0,20,0,20"
+            Spacing="10">
+
+            <Button
+                Content="Generate Daily Report"
+                Padding="20,10"/>
+
+            <Button
+                Content="Export Selected"
+                Padding="20,10"/>
+
+        </StackPanel>
+
+        <ListView
+            Grid.Row="2"
+            ItemsSource="{Binding Reports}">
+
+            <ListView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Margin="0,6"
+                        Padding="18"
+                        CornerRadius="12"
+                        BorderThickness="1"
+                        BorderBrush="#404040">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="140"/>
+
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                Text="{Binding ReportName}"
+                                FontWeight="SemiBold"/>
+
+                            <TextBlock
+                                Grid.Column="1"
+                                Text="{Binding Type}"/>
+
+                            <TextBlock
+                                Grid.Column="2"
+                                Text="{Binding GeneratedBy}"/>
+
+                            <TextBlock
+                                Grid.Column="3"
+                                Text="{Binding Created}"/>
+
+                            <TextBlock
+                                Grid.Column="4"
+                                Text="{Binding Status}"/>
+
+                        </Grid>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </Grid>
+
+</Page>
