@@ -4,3 +4,10 @@ __pycache__/
 *.pyc
 *.db
 .env
+.vs/
+**/.vs/
+*.user
+bin/
+obj/
+**/bin/
+**/obj/
