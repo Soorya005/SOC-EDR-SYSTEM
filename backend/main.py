@@ -5,6 +5,7 @@ from database.db import initialize_database
 from api import events
 from api import alerts
 from api import stats
+from api import reports
 
 # Create database tables
 initialize_database()
@@ -28,6 +29,7 @@ app.add_middleware(
 app.include_router(events.router)
 app.include_router(alerts.router)
 app.include_router(stats.router)
+app.include_router(reports.router)
 from database.db import get_connection
 
 @app.get("/health", tags=["Health"])

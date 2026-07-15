@@ -1,0 +1,21 @@
+title: Registry Run Key Modification From Script Interpreter
+id: 5f6a7b8c-9d0e-4f1a-b2c3-d4e5f6a7b8c9
+status: experimental
+description: Detects cmd.exe or powershell.exe writing to Registry Run/RunOnce keys — persistence step following initial script execution.
+tags:
+  - attack.persistence
+  - attack.t1547.001
+level: high
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\reg.exe'
+    TargetObject|contains:
+      - '\CurrentVersion\Run'
+      - '\CurrentVersion\RunOnce'
+  condition: selection

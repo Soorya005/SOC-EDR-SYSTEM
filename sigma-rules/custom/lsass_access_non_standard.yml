@@ -1,0 +1,21 @@
+title: Non-Standard Process Accessing LSASS
+id: 3d4e5f6a-7b8c-4d9e-a1b2-c3d4e5f6a7b8
+status: experimental
+description: Detects processes other than known system tools accessing lsass.exe — credential dumping indicator.
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+level: critical
+logsource:
+  category: process_access
+  product: windows
+detection:
+  selection:
+    TargetImage|endswith: '\lsass.exe'
+  filter:
+    Image|endswith:
+      - '\svchost.exe'
+      - '\wininit.exe'
+      - '\csrss.exe'
+      - '\MsMpEng.exe'
+  condition: selection and not filter

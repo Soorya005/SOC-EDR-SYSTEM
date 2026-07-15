@@ -1,0 +1,22 @@
+title: Encoded PowerShell Spawned From Office Application
+id: 8f2a1e3b-4c5d-4e6f-9a1b-2c3d4e5f6a7b
+status: experimental
+description: Detects PowerShell with -EncodedCommand launched as a child of Word/Excel/PowerPoint — common phishing macro pattern.
+tags:
+  - attack.execution
+  - attack.t1059.001
+level: high
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\powershell.exe'
+    ParentImage|endswith:
+      - '\winword.exe'
+      - '\excel.exe'
+      - '\powerpnt.exe'
+    CommandLine|contains:
+      - '-EncodedCommand'
+      - '-enc'
+  condition: selection
