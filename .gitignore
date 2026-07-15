@@ -11,3 +11,5 @@ bin/
 obj/
 **/bin/
 **/obj/
+detection/reports/output/*.pdf
+*.log
