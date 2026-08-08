@@ -13,9 +13,10 @@ detection:
   selection:
     TargetImage|endswith: '\lsass.exe'
   filter:
-    Image|endswith:
+    SourceImage|endswith:
       - '\svchost.exe'
       - '\wininit.exe'
       - '\csrss.exe'
       - '\MsMpEng.exe'
+      - '\ServiceHost.exe'
   condition: selection and not filter

@@ -11,9 +11,7 @@ def create_alert(alert: AlertCreate) -> str:
     Validate and store a new alert.
     """
 
-    # Business Rule:
-    # Every alert must belong to an existing event.
-
+    # Event must exist
     event = repositories.get_event(alert.event_id)
 
     if event is None:
@@ -21,10 +19,20 @@ def create_alert(alert: AlertCreate) -> str:
             f"Event {alert.event_id} does not exist."
         )
 
+    # Check whether the incident already exists
+    incident = repositories.get_incident(alert.incident_id)
+
+    if incident is None:
+        repositories.create_incident({
+            "id": alert.incident_id,
+            "host": event["host"],
+            "severity": alert.severity,
+            "status": "Open",
+        })
+
     return repositories.create_alert(
         alert.model_dump()
     )
-
 
 def get_alert(alert_id: str):
     """

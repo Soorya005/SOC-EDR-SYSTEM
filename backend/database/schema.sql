@@ -16,6 +16,14 @@ CREATE TABLE IF NOT EXISTS events (
     raw_json TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS incidents (
+    id TEXT PRIMARY KEY,
+    host TEXT NOT NULL,
+    severity TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Open',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
 
 CREATE TABLE IF NOT EXISTS alerts (
     id TEXT PRIMARY KEY,
@@ -38,7 +46,11 @@ CREATE TABLE IF NOT EXISTS alerts (
 
     FOREIGN KEY (event_id)
 REFERENCES events(id)
-ON DELETE CASCADE 
+ON DELETE CASCADE,
+
+FOREIGN KEY (incident_id)
+    REFERENCES incidents(id)
+    ON DELETE SET NULL 
 );
 
 

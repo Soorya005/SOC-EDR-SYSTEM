@@ -15,6 +15,7 @@ FIELD_MAP = {
     "destinationport": "dest_port",
     "queryname": "query_name",
     "user": "user",
+    "sourceimage": "source_image",
 }
 
 

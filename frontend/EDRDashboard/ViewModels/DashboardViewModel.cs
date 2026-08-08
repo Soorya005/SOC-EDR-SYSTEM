@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using EDRDashboard.Models;
 using EDRDashboard.Services;
 using LiveChartsCore;
@@ -10,7 +11,7 @@ namespace EDRDashboard.ViewModels
 {
     public partial class DashboardViewModel : ObservableObject
     {
-        private readonly MockDataService _dataService = new();
+        private readonly ApiService _apiService = new();
 
         [ObservableProperty]
         private DashboardStats stats = new();
@@ -23,7 +24,7 @@ namespace EDRDashboard.ViewModels
 
         public DashboardViewModel()
         {
-            Stats = _dataService.GetDashboardStats();
+            _ = LoadDashboardAsync();
 
             AlertTrendSeries = new ISeries[]
             {
@@ -61,9 +62,14 @@ namespace EDRDashboard.ViewModels
             };
         }
 
-        public void Refresh()
-        {
-            Stats = _dataService.GetDashboardStats();
-        }
+        public async Task LoadDashboardAsync()
+{
+    Stats = await _apiService.GetDashboardAsync();
+}
+
+        public async Task Refresh()
+{
+    Stats = await _apiService.GetDashboardAsync();
+}
     }
 }

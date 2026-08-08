@@ -36,17 +36,20 @@
 
             <Button
                 Content="Generate Daily Report"
-                Padding="20,10"/>
+                Padding="20,10"
+                Command="{Binding GenerateDailyReportCommand}"/>
 
             <Button
                 Content="Export Selected"
-                Padding="20,10"/>
+                Padding="20,10"
+                Command="{Binding ExportCommand}"/>
 
         </StackPanel>
 
         <ListView
             Grid.Row="2"
-            ItemsSource="{Binding Reports}">
+            ItemsSource="{Binding Reports}"
+            SelectedItem="{Binding SelectedReport, Mode=TwoWay}">
 
             <ListView.ItemTemplate>
 

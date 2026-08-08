@@ -1,3 +1,4 @@
+
 import logging
 import uuid
 import time
@@ -39,13 +40,27 @@ class AlertCorrelator:
                 
         # Create new incident
         new_incident_id = str(uuid.uuid4())
+
+        # Keep it in memory for correlation
         self.active_incidents[host] = {
             "incident_id": new_incident_id,
             "last_updated": current_time,
             "alerts": [alert_data]
         }
-        
+
         logger.info(f"Created new incident {new_incident_id} for host {host}")
+
+        return new_incident_id
+
+        # Keep it in memory for correlation
+        self.active_incidents[host] = {
+            "incident_id": new_incident_id,
+            "last_updated": current_time,
+            "alerts": [alert_data]
+        }
+
+        logger.info(f"Created new incident {new_incident_id} for host {host}")
+
         return new_incident_id
 
     def get_incident_alerts(self, incident_id: str) -> list:
