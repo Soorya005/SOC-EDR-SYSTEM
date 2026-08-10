@@ -6,12 +6,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:EDRDashboard.Controls"
     xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="Transparent">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-
-        <Grid Padding="24">
-
+        <Grid Padding="24" RowSpacing="24">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -19,266 +18,351 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-
             <Grid>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel>
-
+                <StackPanel Spacing="4">
                     <TextBlock
-                        Text="SOC EDR Investigation Platform"
-                        FontSize="34"
-                        FontWeight="Bold"/>
-
-                    <TextBlock
-                        Text="Real-time Endpoint Detection &amp; Response"
-                        Opacity="0.7"/>
-
-                    <TextBlock
-                        Margin="0,8,0,0"
-                        Text="{Binding Stats.LastUpdated}"
-                        Opacity="0.6"/>
-
+                        Text="Security Overview"
+                        Style="{StaticResource SecurityTitleStyle}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock
+                            Text="Real-time monitoring and threat detection"
+                            Style="{StaticResource SecuritySubtitleStyle}"/>
+                        <TextBlock
+                            Text="|"
+                            Style="{StaticResource SecuritySubtitleStyle}"/>
+                        <TextBlock
+                            Text="Last Updated:"
+                            Style="{StaticResource SecuritySubtitleStyle}"/>
+                        <TextBlock
+                            Text="{Binding Stats.LastUpdated}"
+                            Style="{StaticResource SecuritySubtitleStyle}"/>
+                    </StackPanel>
                 </StackPanel>
 
+                <!-- Status Pills in Header -->
                 <StackPanel
                     Grid.Column="1"
-                    Spacing="10">
+                    Orientation="Horizontal"
+                    Spacing="16"
+                    VerticalAlignment="Center">
 
                     <controls:StatusIndicator
-    Text="Backend API"
-    IsOnline="{Binding Stats.BackendOnline}"/>
+                        Text="Backend"
+                        IsOnline="{Binding Stats.BackendOnline}"/>
 
                     <controls:StatusIndicator
-    Text="Database"
-    IsOnline="{Binding Stats.DatabaseOnline}"/>
+                        Text="Database"
+                        IsOnline="{Binding Stats.DatabaseOnline}"/>
 
                     <controls:StatusIndicator
-    Text="AI Engine"
-    IsOnline="{Binding Stats.AiOnline}"/>
+                        Text="AI Engine"
+                        IsOnline="{Binding Stats.AiOnline}"/>
 
                     <controls:StatusIndicator
-    Text="Sysmon"
-    IsOnline="{Binding Stats.SysmonRunning}"/>
-
+                        Text="Sysmon"
+                        IsOnline="{Binding Stats.SysmonRunning}"/>
                 </StackPanel>
-
             </Grid>
 
-            <!-- Statistics -->
-
+            <!-- Statistics Cards Row -->
             <Grid
                 Grid.Row="1"
-                Margin="0,25,0,25"
-                ColumnSpacing="20">
-
+                ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <controls:StatisticCard
                     Grid.Column="0"
                     Title="Total Alerts"
                     Value="{Binding Stats.TotalAlerts}"
-                    Accent="OrangeRed"/>
+                    Accent="{StaticResource HighBrush}"/>
 
                 <controls:StatisticCard
                     Grid.Column="1"
                     Title="Critical Alerts"
                     Value="{Binding Stats.CriticalAlerts}"
-                    Accent="Red"/>
+                    Accent="{StaticResource CriticalBrush}"/>
 
                 <controls:StatisticCard
                     Grid.Column="2"
                     Title="Active Incidents"
                     Value="{Binding Stats.ActiveIncidents}"
-                    Accent="DodgerBlue"/>
+                    Accent="{StaticResource AccentCyanBrush}"/>
 
                 <controls:StatisticCard
                     Grid.Column="3"
-                    Title="Endpoints"
+                    Title="Monitored Endpoints"
                     Value="{Binding Stats.MonitoredEndpoints}"
-                    Accent="LimeGreen"/>
-
+                    Accent="{StaticResource HealthyBrush}"/>
             </Grid>
 
-            <!-- Body -->
-
+            <!-- Main Body Layout -->
             <Grid
                 Grid.Row="2"
-                ColumnSpacing="20"
-                RowSpacing="20">
-
+                ColumnSpacing="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="250"/>
-                    <RowDefinition Height="250"/>
-                    <RowDefinition Height="220"/>
-                </Grid.RowDefinitions>
+                <!-- Left Column: Chart & Recent Alerts Table -->
+                <Grid RowSpacing="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="300"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                <!-- Alert Trend -->
+                    <!-- Alert Activity Chart -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                <Border
-    Grid.Row="0"
-    Grid.Column="0"
-    Padding="20"
-    CornerRadius="12"
-    BorderBrush="#404040"
-    BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
 
-                    <Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                                <StackPanel Spacing="2">
+                                    <TextBlock
+                                        Text="Alert Activity"
+                                        FontSize="15"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"/>
+                                    <TextBlock
+                                        Text="Security alerts detected over time"
+                                        FontSize="12"
+                                        Foreground="#6B7280"/>
+                                </StackPanel>
 
-                        <TextBlock
-            Text="Alert Trend"
-            FontSize="20"
-            FontWeight="Bold"/>
+                                <!-- Duration Badges -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                    <Border Background="#161A22" CornerRadius="2" Padding="8,4" BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}">
+                                        <TextBlock Text="1H" FontSize="11" Foreground="#6B7280" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border Background="#002D3D" CornerRadius="2" Padding="8,4" BorderThickness="1" BorderBrush="{StaticResource AccentCyanBrush}">
+                                        <TextBlock Text="24H" FontSize="11" Foreground="{StaticResource AccentCyanBrush}" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border Background="#161A22" CornerRadius="2" Padding="8,4" BorderThickness="1" BorderBrush="{StaticResource CardBorderBrush}">
+                                        <TextBlock Text="7D" FontSize="11" Foreground="#6B7280" FontWeight="SemiBold"/>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
 
-                        <lvc:CartesianChart
-            Grid.Row="1"
-            Margin="0,20,0,0"
-            Series="{Binding AlertTrendSeries}"
-            XAxes="{Binding XAxes}"
-            YAxes="{Binding YAxes}" />
+                            <lvc:CartesianChart
+                                Grid.Row="1"
+                                Margin="0,12,0,0"
+                                Series="{Binding AlertTrendSeries}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxes}" />
+                        </Grid>
+                    </Border>
 
-                    </Grid>
+                    <!-- Recent Alerts Table Card -->
+                    <Border
+                        Grid.Row="1"
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                </Border>
+                        <StackPanel Spacing="16">
+                            <TextBlock
+                                Text="Recent Alerts"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Foreground="White"/>
 
-                <!-- Recent Alerts -->
+                            <!-- Table Header -->
+                            <Grid ColumnSpacing="12" Padding="12,0" Background="#161A22" Height="32">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="Severity" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="Alert Title" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="Host" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="Status" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="4" Text="Time" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                            </Grid>
 
-                <Border
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderBrush="#404040"
-                    BorderThickness="1">
+                            <!-- Table Rows (ListView) -->
+                            <ListView
+                                x:Name="RecentAlertsList"
+                                ItemsSource="{Binding RecentAlerts}"
+                                SelectionMode="Single"
+                                SelectionChanged="RecentAlertsList_SelectionChanged"
+                                Padding="0"
+                                Margin="0">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0,1"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,0,0,1" Padding="12,10">
+                                            <Grid ColumnSpacing="12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="100"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="120"/>
+                                                    <ColumnDefinition Width="120"/>
+                                                    <ColumnDefinition Width="100"/>
+                                                </Grid.ColumnDefinitions>
 
-                    <StackPanel>
+                                                <!-- Severity Badge -->
+                                                <Border Background="Transparent" 
+                                                        BorderBrush="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                                        Style="{StaticResource SeverityBadgeStyle}">
+                                                    <TextBlock Text="{Binding Severity}" 
+                                                               Foreground="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                                               FontSize="10" 
+                                                               FontWeight="Bold"/>
+                                                </Border>
 
-                        <TextBlock
-                            Text="Recent Alerts"
-                            FontSize="20"
-                            FontWeight="Bold"/>
+                                                <!-- Title -->
+                                                <TextBlock Grid.Column="1" Text="{Binding Title}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
 
-                        <TextBlock Margin="0,15,0,0">🔴 Encoded PowerShell</TextBlock>
-                        <TextBlock>🟠 LSASS Memory Access</TextBlock>
-                        <TextBlock>🟡 Registry Persistence</TextBlock>
-                        <TextBlock>🟢 WMI Execution</TextBlock>
+                                                <!-- Host (Fallback to Endpoint or hardcoded if empty) -->
+                                                <TextBlock Grid.Column="2" Text="{Binding Endpoint}" Foreground="#9CA3AF" FontSize="13" VerticalAlignment="Center"/>
 
-                    </StackPanel>
+                                                <!-- Status -->
+                                                <TextBlock Grid.Column="3" Text="{Binding Status}" Foreground="#9CA3AF" FontSize="13" VerticalAlignment="Center"/>
 
-                </Border>
+                                                <!-- Time (Format string) -->
+                                                <TextBlock Grid.Column="4" Text="{Binding Time}" Foreground="#6B7280" FontSize="12" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
-                <!-- MITRE -->
+                <!-- Right Column: Severity Breakdown & System Health -->
+                <StackPanel Grid.Column="1" Spacing="20">
+                    
+                    <!-- Threat Severity breakdown Card -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                <Border
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderBrush="#404040"
-                    BorderThickness="1">
+                        <StackPanel Spacing="16">
+                            <TextBlock
+                                Text="Threat Severity"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Foreground="White"/>
 
-                    <StackPanel>
+                            <StackPanel Spacing="12">
+                                <!-- Critical -->
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="Critical" FontSize="12" Foreground="White" FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding CriticalCount}" HorizontalAlignment="Right" FontSize="12" Foreground="{StaticResource CriticalBrush}" FontWeight="Bold"/>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding CriticalPercent}" Minimum="0" Maximum="100" Height="4" Foreground="{StaticResource CriticalBrush}" Background="#1F1F2E"/>
+                                </StackPanel>
 
-                        <TextBlock
-                            Text="Top MITRE ATT&amp;CK Techniques"
-                            FontSize="20"
-                            FontWeight="Bold"/>
+                                <!-- High -->
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="High" FontSize="12" Foreground="White" FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding HighCount}" HorizontalAlignment="Right" FontSize="12" Foreground="{StaticResource HighBrush}" FontWeight="Bold"/>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding HighPercent}" Minimum="0" Maximum="100" Height="4" Foreground="{StaticResource HighBrush}" Background="#1F1F2E"/>
+                                </StackPanel>
 
-                        <TextBlock Margin="0,15,0,0">T1059.001 - PowerShell</TextBlock>
-                        <TextBlock>T1003 - Credential Dumping</TextBlock>
-                        <TextBlock>T1547 - Registry Run Keys</TextBlock>
-                        <TextBlock>T1105 - Ingress Tool Transfer</TextBlock>
+                                <!-- Medium -->
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="Medium" FontSize="12" Foreground="White" FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding MediumCount}" HorizontalAlignment="Right" FontSize="12" Foreground="{StaticResource MediumBrush}" FontWeight="Bold"/>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding MediumPercent}" Minimum="0" Maximum="100" Height="4" Foreground="{StaticResource MediumBrush}" Background="#1F1F2E"/>
+                                </StackPanel>
 
-                    </StackPanel>
+                                <!-- Low -->
+                                <StackPanel Spacing="4">
+                                    <Grid>
+                                        <TextBlock Text="Low" FontSize="12" Foreground="White" FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding LowCount}" HorizontalAlignment="Right" FontSize="12" Foreground="{StaticResource LowBrush}" FontWeight="Bold"/>
+                                    </Grid>
+                                    <ProgressBar Value="{Binding LowPercent}" Minimum="0" Maximum="100" Height="4" Foreground="{StaticResource LowBrush}" Background="#1F1F2E"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
 
-                </Border>
+                    <!-- System Health Card -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                <!-- System Health -->
+                        <StackPanel Spacing="16">
+                            <TextBlock
+                                Text="System Health"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Foreground="White"/>
 
-                <Border
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderBrush="#404040"
-                    BorderThickness="1">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            Text="System Health"
-                            FontSize="20"
-                            FontWeight="Bold"/>
-
-                        <TextBlock Margin="0,15,0,0">🟢 Backend Online</TextBlock>
-                        <TextBlock>🟢 Database Connected</TextBlock>
-                        <TextBlock>🟢 AI Engine Ready</TextBlock>
-                        <TextBlock>🟢 Sysmon Running</TextBlock>
-
-                    </StackPanel>
-
-                </Border>
-
-                <!-- Activity -->
-
-                <Border
-                    Grid.Row="2"
-                    Grid.ColumnSpan="2"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderBrush="#404040"
-                    BorderThickness="1">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            Text="Activity Feed"
-                            FontSize="20"
-                            FontWeight="Bold"/>
-
-                        <TextBlock Margin="0,15,0,0">
-                            16:42 - Critical PowerShell alert detected.
-                        </TextBlock>
-
-                        <TextBlock>
-                            16:20 - LSASS access investigation started.
-                        </TextBlock>
-
-                        <TextBlock>
-                            15:58 - Registry persistence alert escalated.
-                        </TextBlock>
-
-                        <TextBlock>
-                            15:30 - WMI execution alert closed.
-                        </TextBlock>
-
-                    </StackPanel>
-
-                </Border>
-
+                            <StackPanel Spacing="12">
+                                <Grid>
+                                    <TextBlock Text="Backend" Foreground="#9CA3AF" FontSize="13"/>
+                                    <TextBlock Text="{Binding Stats.BackendOnline, Converter={StaticResource OnlineStatusToTextConverter}}" Foreground="{Binding Stats.BackendOnline, Converter={StaticResource OnlineStatusToColorConverter}}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                                </Grid>
+                                <Grid>
+                                    <TextBlock Text="Database" Foreground="#9CA3AF" FontSize="13"/>
+                                    <TextBlock Text="{Binding Stats.DatabaseOnline, Converter={StaticResource OnlineStatusToTextConverter}}" Foreground="{Binding Stats.DatabaseOnline, Converter={StaticResource OnlineStatusToColorConverter}}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                                </Grid>
+                                <Grid>
+                                    <TextBlock Text="AI Engine" Foreground="#9CA3AF" FontSize="13"/>
+                                    <!-- Use status color depending on dynamic binding -->
+                                    <TextBlock Text="{Binding Stats.AiOnline, Converter={StaticResource OnlineStatusToTextConverter}}" Foreground="{Binding Stats.AiOnline, Converter={StaticResource OnlineStatusToColorConverter}}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right" x:Name="AiHealthText"/>
+                                </Grid>
+                                <Grid>
+                                    <TextBlock Text="Sysmon" Foreground="#9CA3AF" FontSize="13"/>
+                                    <TextBlock Text="{Binding Stats.SysmonRunning, Converter={StaticResource OnlineStatusToTextConverter}}" Foreground="{Binding Stats.SysmonRunning, Converter={StaticResource OnlineStatusToColorConverter}}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Right"/>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
             </Grid>
-
         </Grid>
-
     </ScrollViewer>
-
 </Page>

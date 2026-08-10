@@ -1,6 +1,7 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using EDRDashboard.Models;
 using EDRDashboard.ViewModels;
-using Microsoft.UI.Xaml.Controls;
 
 namespace EDRDashboard.Views
 {
@@ -30,29 +31,39 @@ namespace EDRDashboard.Views
             ViewModel.Search(sender.Text);
         }
 
-        private void FilterAll_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void SeverityCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ViewModel.FilterBySeverity("All");
+            if (SeverityCombo == null || ViewModel == null) return;
+            if (SeverityCombo.SelectedItem is ComboBoxItem item)
+            {
+                var severity = item.Content.ToString();
+                if (severity == "All Severities") severity = "All";
+                ViewModel.FilterBySeverity(severity);
+            }
         }
 
-        private void FilterCritical_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void StatusCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ViewModel.FilterBySeverity("Critical");
+            if (StatusCombo == null || ViewModel == null) return;
+            if (StatusCombo.SelectedItem is ComboBoxItem item)
+            {
+                var status = item.Content.ToString();
+                if (status == "All Statuses") status = "All";
+                ViewModel.FilterByStatus(status);
+            }
         }
 
-        private void FilterHigh_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.FilterBySeverity("High");
+            await ViewModel.Refresh();
         }
 
-        private void FilterMedium_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void InvestigateButton_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.FilterBySeverity("Medium");
-        }
-
-        private void FilterLow_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-        {
-            ViewModel.FilterBySeverity("Low");
+            if (sender is Button btn && btn.Tag is Alert alert)
+            {
+                Frame.Navigate(typeof(InvestigationPage), alert);
+            }
         }
     }
 }

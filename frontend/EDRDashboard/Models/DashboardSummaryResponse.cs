@@ -1,23 +1,34 @@
+using System.Text.Json.Serialization;
+
 namespace EDRDashboard.Models
 {
     public class DashboardSummaryResponse
     {
-        public int total_alerts { get; set; }
+        [JsonPropertyName("total_alerts")]
+        public int TotalAlerts { get; set; }
 
-        public int critical_alerts { get; set; }
+        [JsonPropertyName("critical_alerts")]
+        public int CriticalAlerts { get; set; }
 
-        public int active_incidents { get; set; }
+        [JsonPropertyName("active_incidents")]
+        public int ActiveIncidents { get; set; }
 
-        public int monitored_endpoints { get; set; }
+        [JsonPropertyName("monitored_endpoints")]
+        public int MonitoredEndpoints { get; set; }
 
-        public bool backend_online { get; set; }
+        [JsonPropertyName("backend_online")]
+        public bool BackendOnline { get; set; }
 
-        public bool database_online { get; set; }
+        [JsonPropertyName("database_online")]
+        public bool DatabaseOnline { get; set; }
 
-        public bool ai_online { get; set; }
+        [JsonPropertyName("ai_online")]
+        public bool AiOnline { get; set; }
 
-        public bool sysmon_running { get; set; }
+        [JsonPropertyName("sysmon_running")]
+        public bool SysmonRunning { get; set; }
 
-        public string last_updated { get; set; } = "";
+        [JsonPropertyName("last_updated")]
+        public string LastUpdated { get; set; } = "";
     }
 }

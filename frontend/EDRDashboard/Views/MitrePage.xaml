@@ -4,85 +4,275 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="Transparent">
 
-    <Grid Padding="24">
-
+    <Grid Padding="24" RowSpacing="24">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="0,0,0,20">
-
+        <!-- Header -->
+        <StackPanel Spacing="4">
             <TextBlock
                 Text="MITRE ATT&amp;CK"
-                FontSize="32"
-                FontWeight="Bold"/>
-
+                Style="{StaticResource SecurityTitleStyle}"/>
             <TextBlock
-                Text="Observed adversary techniques mapped from alerts"
-                Opacity="0.7"/>
-
+                Text="Observed adversary techniques mapped from security alerts"
+                Style="{StaticResource SecuritySubtitleStyle}"/>
         </StackPanel>
 
-        <ListView
+        <!-- MITRE Stats row -->
+        <Grid
             Grid.Row="1"
-            ItemsSource="{Binding Techniques}">
+            ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <ListView.ItemTemplate>
+            <Border Background="{StaticResource CardBackgroundBrush}" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1" CornerRadius="4" Padding="18,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Width="3" Fill="{StaticResource AccentCyanBrush}" RadiusX="1" RadiusY="1" VerticalAlignment="Stretch" Margin="0,2,12,2"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Techniques Observed" FontSize="11" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <TextBlock Text="{Binding TechniquesCount}" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-                <DataTemplate>
+            <Border Grid.Row="0" Grid.Column="1" Background="{StaticResource CardBackgroundBrush}" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1" CornerRadius="4" Padding="18,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Width="3" Fill="{StaticResource HighBrush}" RadiusX="1" RadiusY="1" VerticalAlignment="Stretch" Margin="0,2,12,2"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Mapped Alerts" FontSize="11" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <TextBlock Text="{Binding AlertsCount}" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-                    <Border
-                        Margin="0,6"
-                        Padding="18"
-                        CornerRadius="12"
-                        BorderBrush="#404040"
-                        BorderThickness="1">
+            <Border Grid.Row="0" Grid.Column="2" Background="{StaticResource CardBackgroundBrush}" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1" CornerRadius="4" Padding="18,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Width="3" Fill="{StaticResource HealthyBrush}" RadiusX="1" RadiusY="1" VerticalAlignment="Stretch" Margin="0,2,12,2"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Tactics Observed" FontSize="11" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <TextBlock Text="{Binding TacticsCount}" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
 
-                        <Grid>
+        <!-- Body split -->
+        <Grid Grid.Row="2" ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="420"/>
+            </Grid.ColumnDefinitions>
 
+            <!-- Left column: observed techniques table -->
+            <Border
+                Background="{StaticResource CardBackgroundBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="20">
+
+                <Grid RowSpacing="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Observed Techniques" FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+
+                    <!-- Table Header -->
+                    <Grid Grid.Row="0" Margin="0,28,0,0" ColumnSpacing="12" Padding="12,0" Background="#161A22" Height="36">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="ID" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="Technique Name" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="Tactic" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="3" Text="Alerts" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="Severity" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Table Rows -->
+                    <ListView
+                        x:Name="TechniquesList"
+                        Grid.Row="1"
+                        ItemsSource="{Binding Techniques}"
+                        SelectedItem="{Binding SelectedTechnique, Mode=TwoWay}"
+                        Padding="0"
+                        Margin="0">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0,1"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,0,0,1" Padding="12,12">
+                                    <Grid ColumnSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="100"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- ID -->
+                                        <TextBlock Text="{Binding TechniqueId}" Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
+
+                                        <!-- Name -->
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+
+                                        <!-- Tactic -->
+                                        <TextBlock Grid.Column="2" Text="{Binding Tactic}" Foreground="#9CA3AF" FontSize="13" VerticalAlignment="Center"/>
+
+                                        <!-- Alerts count -->
+                                        <TextBlock Grid.Column="3" Text="{Binding AlertCount}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+
+                                        <!-- Severity Badge -->
+                                        <Border Grid.Column="4" 
+                                                Background="Transparent" 
+                                                BorderBrush="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                                Style="{StaticResource SeverityBadgeStyle}"
+                                                HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding Severity}" 
+                                                       Foreground="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                                       FontSize="10" 
+                                                       FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+
+            <!-- Right column: Technique details -->
+            <Border
+                Grid.Column="1"
+                Background="{StaticResource CardBackgroundBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="20"
+                Visibility="{Binding HasSelection, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Visible}">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="20">
+                        <!-- Heading -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="{Binding SelectedTechnique.TechniqueId}" Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold" FontSize="15"/>
+                            <TextBlock Text="{Binding SelectedTechnique.Name}" Foreground="White" FontWeight="Bold" FontSize="18" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <!-- Stats Grid -->
+                        <Grid ColumnSpacing="8" RowSpacing="12">
                             <Grid.ColumnDefinitions>
-
-                                <ColumnDefinition Width="130"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="120"/>
-
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                            <TextBlock
-                                Text="{Binding TechniqueId}"
-                                FontWeight="Bold"/>
+                            <Border Background="#161A22" CornerRadius="2" Padding="12,10" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="TACTIC" FontSize="10" Foreground="#6B7280" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding SelectedTechnique.Tactic}" FontSize="13" Foreground="White" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Border>
 
-                            <TextBlock
-                                Grid.Column="1"
-                                Text="{Binding Name}"/>
+                            <Border Grid.Column="1" Background="#161A22" CornerRadius="2" Padding="12,10" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="SEVERITY" FontSize="10" Foreground="#6B7280" FontWeight="Bold"/>
+                                    <Border Background="Transparent" 
+                                            BorderBrush="{Binding SelectedTechnique.Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                            Style="{StaticResource SeverityBadgeStyle}"
+                                            HorizontalAlignment="Left" Margin="0,2,0,0">
+                                        <TextBlock Text="{Binding SelectedTechnique.Severity}" 
+                                                   Foreground="{Binding SelectedTechnique.Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                                   FontSize="10" FontWeight="Bold"/>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
 
-                            <TextBlock
-                                Grid.Column="2"
-                                Text="{Binding Tactic}"/>
+                            <Border Grid.Row="1" Background="#161A22" CornerRadius="2" Padding="12,10" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="DETECTIONS" FontSize="10" Foreground="#6B7280" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding SelectedTechnique.AlertCount}" FontSize="14" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
 
-                            <TextBlock
-                                Grid.Column="3"
-                                Text="{Binding AlertCount}"/>
-
-                            <TextBlock
-                                Grid.Column="4"
-                                Text="{Binding Severity}"/>
-
+                            <Border Grid.Row="1" Grid.Column="1" Background="#161A22" CornerRadius="2" Padding="12,10" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="AFFECTED HOSTS" FontSize="10" Foreground="#6B7280" FontWeight="Bold"/>
+                                    <TextBlock Text="1" FontSize="14" Foreground="White" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Border>
                         </Grid>
 
-                    </Border>
+                        <!-- Description -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Description" FontSize="12" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                            <TextBlock Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap" LineHeight="18">
+                                <Run Text="Adversaries may abuse execution commands, scripts, or APIs associated with "/>
+                                <Run Text="{Binding SelectedTechnique.Name, Mode=OneWay}"/>
+                                <Run Text=" to bypass endpoint protections, gather system details, or download additional modules. Analyze the mapped events to assess the scope of command invocation."/>
+                            </TextBlock>
+                        </StackPanel>
 
-                </DataTemplate>
-
-            </ListView.ItemTemplate>
-
-        </ListView>
-
+                        <!-- Related Alerts List -->
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Recent Alerts" FontSize="12" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                            <ListView ItemsSource="{Binding RelatedAlerts}" SelectionMode="None">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1" CornerRadius="2" Padding="12" Margin="0,4" Background="#161A22">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding Title}" Foreground="White" FontSize="13" FontWeight="SemiBold"/>
+                                                <Grid>
+                                                    <TextBlock Text="{Binding Endpoint}" Foreground="#6B7280" FontSize="11"/>
+                                                    <TextBlock Text="{Binding Time}" Foreground="#6B7280" FontSize="11" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
-
 </Page>

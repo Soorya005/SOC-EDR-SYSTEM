@@ -133,7 +133,7 @@ def generate_daily_report_service() -> dict:
     with open(filepath, "wb") as f:
         f.write(pdf_bytes)
         
-    download_url = f"http://localhost:8000/reports/download/{filename}"
+    download_url = f"http://127.0.0.1:8000/reports/download/{filename}"
     
     return {
         "filename": filename,

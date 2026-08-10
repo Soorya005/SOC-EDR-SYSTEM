@@ -6,6 +6,7 @@ from enum import Enum
 # EVENT MODELS
 
 class EventCreate(BaseModel):
+    model_config = ConfigDict(extra="allow")
     event_id: int
     host: Optional[str] = None
     process_name: Optional[str] = None

@@ -7,6 +7,7 @@ namespace EDRDashboard.Views
         public SettingsPage()
         {
             InitializeComponent();
+            DataContext = new ViewModels.SettingsViewModel();
         }
     }
 }

@@ -4,94 +4,152 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:controls="using:EDRDashboard.Controls"
+    mc:Ignorable="d"
+    Background="Transparent">
 
-    <Grid Padding="24">
-
+    <Grid Padding="24" RowSpacing="24">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="0,0,0,20">
-
+        <!-- Header -->
+        <StackPanel Spacing="4">
             <TextBlock
-                Text="Security Incidents"
-                FontSize="32"
-                FontWeight="Bold"/>
-
+                Text="Incidents"
+                Style="{StaticResource SecurityTitleStyle}"/>
             <TextBlock
-                Text="Correlated security incidents requiring analyst attention"
-                Opacity="0.7"/>
-
+                Text="Correlated security events grouped into active investigations"
+                Style="{StaticResource SecuritySubtitleStyle}"/>
         </StackPanel>
 
-        <ListView
+        <!-- Incidents Statistics Cards -->
+        <Grid
             Grid.Row="1"
-            ItemsSource="{Binding Incidents}">
+            ColumnSpacing="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <ListView.ItemTemplate>
+            <controls:StatisticCard
+                Grid.Column="0"
+                Title="Open Incidents"
+                Value="{Binding OpenIncidentsCount}"
+                Accent="{StaticResource AccentCyanBrush}"/>
 
-                <DataTemplate>
+            <controls:StatisticCard
+                Grid.Column="1"
+                Title="Critical Incidents"
+                Value="{Binding CriticalIncidentsCount}"
+                Accent="{StaticResource CriticalBrush}"/>
 
-                    <Border
-                        Margin="0,6"
-                        Padding="18"
-                        CornerRadius="12"
-                        BorderBrush="#404040"
-                        BorderThickness="1">
+            <controls:StatisticCard
+                Grid.Column="2"
+                Title="Investigating"
+                Value="{Binding InvestigatingCount}"
+                Accent="{StaticResource HighBrush}"/>
 
-                        <Grid>
+            <controls:StatisticCard
+                Grid.Column="3"
+                Title="Contained"
+                Value="{Binding ContainedCount}"
+                Accent="{StaticResource HealthyBrush}"/>
+        </Grid>
 
-                            <Grid.ColumnDefinitions>
+        <!-- Incidents Queue Table -->
+        <Border
+            Grid.Row="2"
+            Background="{StaticResource CardBackgroundBrush}"
+            BorderBrush="{StaticResource CardBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="4"
+            Padding="20">
 
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="140"/>
-                                <ColumnDefinition Width="140"/>
-                                <ColumnDefinition Width="150"/>
+            <Grid RowSpacing="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                            </Grid.ColumnDefinitions>
+                <TextBlock Text="Active Incidents Queue" FontSize="15" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,4"/>
 
-                            <TextBlock
-                                Text="{Binding Id}"
-                                FontWeight="Bold"/>
+                <!-- Table Header -->
+                <Grid Grid.Row="0" Margin="0,28,0,0" ColumnSpacing="12" Padding="12,0" Background="#161A22" Height="36">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
 
-                            <StackPanel Grid.Column="1">
+                    <TextBlock Text="Incident ID" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="Host" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="Severity" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="Status" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="4" Text="Created" FontSize="11" FontWeight="Bold" Foreground="#6B7280" VerticalAlignment="Center"/>
+                </Grid>
 
-                                <TextBlock
-                                    Text="{Binding Name}"
-                                    FontWeight="SemiBold"/>
+                <!-- Incidents List -->
+                <ListView
+                    x:Name="IncidentsList"
+                    Grid.Row="1"
+                    ItemsSource="{Binding Incidents}"
+                    Padding="0"
+                    Margin="0">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0,1"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,0,0,1" Padding="12,12">
+                                <Grid ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="160"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <TextBlock
-                                    Text="{Binding AffectedHost}"
-                                    FontSize="12"
-                                    Opacity="0.6"/>
+                                    <!-- Incident ID -->
+                                    <TextBlock Text="{Binding Id}" Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
 
-                            </StackPanel>
+                                    <!-- Host -->
+                                    <TextBlock Grid.Column="1" Text="{Binding AffectedHost}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
 
-                            <TextBlock
-                                Grid.Column="2"
-                                Text="{Binding Severity}"/>
+                                    <!-- Severity Badge -->
+                                    <Border Grid.Column="2" 
+                                            Background="Transparent" 
+                                            BorderBrush="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                            Style="{StaticResource SeverityBadgeStyle}">
+                                        <TextBlock Text="{Binding Severity}" 
+                                                   Foreground="{Binding Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                                   FontSize="10" 
+                                                   FontWeight="Bold"/>
+                                    </Border>
 
-                            <TextBlock
-                                Grid.Column="3"
-                                Text="{Binding Status}"/>
+                                    <!-- Status -->
+                                    <TextBlock Grid.Column="3" Text="{Binding Status}" Foreground="#9CA3AF" FontSize="13" VerticalAlignment="Center"/>
 
-                            <TextBlock
-                                Grid.Column="4"
-                                Text="{Binding Created}"/>
-
-                        </Grid>
-
-                    </Border>
-
-                </DataTemplate>
-
-            </ListView.ItemTemplate>
-
-        </ListView>
-
+                                    <!-- Created -->
+                                    <TextBlock Grid.Column="4" Text="{Binding Created}" Foreground="#6B7280" FontSize="12" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
     </Grid>
-
 </Page>

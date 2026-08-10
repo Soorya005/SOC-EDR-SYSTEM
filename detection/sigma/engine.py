@@ -16,6 +16,8 @@ FIELD_MAP = {
     "queryname": "query_name",
     "user": "user",
     "sourceimage": "source_image",
+    "grantedaccess": "granted_access",
+    "calltrace": "call_trace",
 }
 
 

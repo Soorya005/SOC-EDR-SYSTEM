@@ -12,11 +12,30 @@ logsource:
 detection:
   selection:
     TargetImage|endswith: '\lsass.exe'
+    # Only flag high-privilege access masks indicating potential memory dumping
+    # These masks must contain PROCESS_VM_READ (0x0010) or PROCESS_ALL_ACCESS (0x1FFFFF)
+    GrantedAccess:
+      - '0x1010'  # PROCESS_VM_READ | PROCESS_QUERY_LIMITED_INFORMATION (Mimikatz default, ProcDump)
+      - '0x1410'  # PROCESS_VM_READ | PROCESS_QUERY_INFORMATION | PROCESS_QUERY_LIMITED_INFORMATION
+      - '0x1438'  # PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION etc.
+      - '0x143a'  # PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_CREATE_THREAD etc.
+      - '0x1400'  # PROCESS_VM_READ | PROCESS_QUERY_INFORMATION
+      - '0x1f0fff' # PROCESS_ALL_ACCESS (Standard Mimikatz)
+      - '0x1fffff' # PROCESS_ALL_ACCESS (Standard/fallback)
   filter:
     SourceImage|endswith:
-      - '\svchost.exe'
-      - '\wininit.exe'
-      - '\csrss.exe'
-      - '\MsMpEng.exe'
-      - '\ServiceHost.exe'
+      # Known legitimate Windows/system binaries that access LSASS
+      - '\lsass.exe'       # LSASS accessing itself
+      - '\svchost.exe'     # Service Host
+      - '\wininit.exe'     # Windows Initialization Process
+      - '\csrss.exe'       # Client Server Runtime Process
+      - '\MsMpEng.exe'     # Windows Defender Antimalware Service
+      - '\ServiceHost.exe' # Local system service host
+      - '\winlogon.exe'    # Windows Logon Application
+      - '\services.exe'    # Services Control Manager
+      - '\LsaIso.exe'      # Credential Guard Isolation Process
+      - '\sihost.exe'      # Shell Infrastructure Host
+      - '\taskhostw.exe'   # Host Process for Windows Tasks
+      - '\spoolsv.exe'     # Print Spooler
+      - '\msiexec.exe'     # Windows Installer
   condition: selection and not filter
