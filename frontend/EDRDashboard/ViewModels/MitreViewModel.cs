@@ -1,34 +1,37 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using EDRDashboard.Models;
 using EDRDashboard.Services;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace EDRDashboard.ViewModels
 {
     public partial class MitreViewModel : ObservableObject
     {
-        private readonly MockDataService _dataService = new();
+        private readonly ApiService _apiService = new();
 
         public ObservableCollection<MitreTechnique> Techniques { get; } = new();
 
         public MitreViewModel()
         {
-            LoadTechniques();
+            _ = LoadTechniques();
         }
 
-        public void LoadTechniques()
+        public async Task LoadTechniques()
         {
             Techniques.Clear();
 
-            foreach (var technique in _dataService.GetMitreTechniques())
+            var techniques = await _apiService.GetMitreTechniquesAsync();
+
+            foreach (var technique in techniques)
             {
                 Techniques.Add(technique);
             }
         }
 
-        public void Refresh()
+        public async Task Refresh()
         {
-            LoadTechniques();
+            await LoadTechniques();
         }
     }
 }

@@ -5,31 +5,32 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EDRDashboard.ViewModels
 {
     public partial class AlertsViewModel : ObservableObject
     {
-        private readonly MockDataService _dataService = new();
+        private readonly ApiService _apiService = new();
 
         public ObservableCollection<Alert> Alerts { get; } = new();
 
         private List<Alert> _allAlerts = new();
 
         public AlertsViewModel()
-        {
-            LoadAlerts();
-        }
+{
+    _ = LoadAlerts();
+}
 
-        public void LoadAlerts()
-        {
-            _allAlerts = _dataService.GetAlerts();
+        public async Task LoadAlerts()
+{
+    _allAlerts = await _apiService.GetAlertsAsync();
 
-            Alerts.Clear();
+    Alerts.Clear();
 
-            foreach (var alert in _allAlerts)
-                Alerts.Add(alert);
-        }
+    foreach (var alert in _allAlerts)
+        Alerts.Add(alert);
+}
 
         public void Search(string text)
         {
@@ -73,9 +74,9 @@ namespace EDRDashboard.ViewModels
                 Alerts.Add(alert);
         }
 
-        public void Refresh()
-        {
-            LoadAlerts();
-        }
+        public async Task Refresh()
+{
+    await LoadAlerts();
+}
     }
 }

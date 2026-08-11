@@ -6,6 +6,8 @@ from api import events
 from api import alerts
 from api import stats
 from api import reports
+from api import mitre
+from api.incidents import router as incidents_router
 
 # Create database tables
 initialize_database()
@@ -30,6 +32,8 @@ app.include_router(events.router)
 app.include_router(alerts.router)
 app.include_router(stats.router)
 app.include_router(reports.router)
+app.include_router(incidents_router)
+app.include_router(mitre.router)
 from database.db import get_connection
 
 @app.get("/health", tags=["Health"])

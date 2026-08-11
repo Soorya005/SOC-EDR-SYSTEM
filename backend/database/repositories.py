@@ -1,5 +1,6 @@
 import json
 import uuid
+from datetime import datetime
 
 VALID_ALERT_STATUSES = {
     "New",
@@ -11,6 +12,43 @@ VALID_ALERT_STATUSES = {
 
 from .db import get_connection
 
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+REPORT_FOLDER = os.path.join(
+    BASE_DIR,
+    "detection",
+    "reports",
+    "output"
+)
+
+def list_reports():
+    reports = []
+
+    if not os.path.exists(REPORT_FOLDER):
+        return reports
+
+    for filename in os.listdir(REPORT_FOLDER):
+        if filename.endswith(".pdf"):
+            path = os.path.join(REPORT_FOLDER, filename)
+
+            reports.append({
+                "report_name": filename,
+                "type": "PDF",
+                "generated_by": "AI Engine",
+                "created": datetime.fromtimestamp(
+                    os.path.getctime(path)
+                ).strftime("%Y-%m-%d %H:%M"),
+                "status": "Completed"
+            })
+
+    reports.sort(
+        key=lambda r: r["created"],
+        reverse=True
+    )
+
+    return reports
 
 # ==========================================================
 # EVENTS REPOSITORY
@@ -312,10 +350,24 @@ def get_summary_stats():
 
     conn.close()
 
+    
+
     return {
         "total_alerts": total_alerts,
         "critical_alerts": critical_alerts,
-        "open_alerts": open_alerts,
+
+        # Frontend expects this field
+        "active_incidents": open_alerts,
+
+        # Placeholder values (replace with real logic later)
+        "monitored_endpoints": 1,
+
+        "backend_online": True,
+        "database_online": True,
+        "ai_online": True,
+        "sysmon_running": True,
+
+        "last_updated": datetime.now().strftime("%d %b %Y %H:%M")
     }
 
 def get_alert_trends():
@@ -367,3 +419,190 @@ def get_heatmap_data():
 
     return [dict(row) for row in rows]
 
+# ============================================================
+# INCIDENTS REPOSITORY
+# ============================================================
+
+def create_incident(incident: dict):
+    """
+    Store a new incident.
+    """
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        INSERT INTO incidents (
+            id,
+            host,
+            severity,
+            status
+        )
+        VALUES (?, ?, ?, ?)
+        """,
+        (
+            incident["id"],
+            incident["host"],
+            incident["severity"],
+            incident.get("status", "Open"),
+        ),
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def list_incidents():
+    """
+    Return all incidents.
+    """
+
+    conn = get_connection()
+
+    rows = conn.execute(
+        """
+        SELECT *
+        FROM incidents
+        ORDER BY created_at DESC
+        """
+    ).fetchall()
+
+    conn.close()
+
+    return [dict(r) for r in rows]
+
+
+def get_incident(incident_id: str):
+    conn = get_connection()
+
+    row = conn.execute(
+        """
+        SELECT *
+        FROM incidents
+        WHERE id = ?
+        """,
+        (incident_id,),
+    ).fetchone()
+
+    conn.close()
+
+    return dict(row) if row else None
+
+
+def create_incident(incident: dict):
+    conn = get_connection()
+
+    conn.execute(
+        """
+        INSERT INTO incidents (
+            id,
+            host,
+            severity,
+            status
+        )
+        VALUES (?, ?, ?, ?)
+        """,
+        (
+            incident["id"],
+            incident["host"],
+            incident["severity"],
+            incident.get("status", "Open"),
+        ),
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def get_daily_report_data():
+    """
+    Query database for alerts and incidents in the last 24 hours to compile daily report stats.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # 1. Total alerts in last 24 hours
+    cursor.execute("SELECT COUNT(*) FROM alerts WHERE created_at >= datetime('now', '-1 day')")
+    total_alerts = cursor.fetchone()[0]
+
+    # 2. Alerts by severity in last 24 hours
+    cursor.execute("SELECT COUNT(*) FROM alerts WHERE severity = 'Critical' AND created_at >= datetime('now', '-1 day')")
+    critical_alerts = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM alerts WHERE severity = 'High' AND created_at >= datetime('now', '-1 day')")
+    high_alerts = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM alerts WHERE severity = 'Medium' AND created_at >= datetime('now', '-1 day')")
+    medium_alerts = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM alerts WHERE severity = 'Low' AND created_at >= datetime('now', '-1 day')")
+    low_alerts = cursor.fetchone()[0]
+
+    # 3. Open incidents in last 24 hours
+    cursor.execute("SELECT COUNT(*) FROM incidents WHERE status != 'Closed' AND created_at >= datetime('now', '-1 day')")
+    open_incidents = cursor.fetchone()[0]
+
+    # 4. MITRE techniques observed in last 24 hours
+    cursor.execute(
+        """
+        SELECT a.technique_id, mt.name, mt.tactic, COUNT(*) as count
+        FROM alerts a
+        LEFT JOIN mitre_techniques mt ON a.technique_id = mt.technique_id
+        WHERE a.technique_id IS NOT NULL AND a.created_at >= datetime('now', '-1 day')
+        GROUP BY a.technique_id, mt.name, mt.tactic
+        ORDER BY count DESC
+        """
+    )
+    techniques = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    return {
+        "total_alerts": total_alerts,
+        "critical_alerts": critical_alerts,
+        "high_alerts": high_alerts,
+        "medium_alerts": medium_alerts,
+        "low_alerts": low_alerts,
+        "open_incidents": open_incidents,
+        "techniques": techniques
+    }
+
+
+def get_mitre_techniques_report():
+    """
+    Query database for MITRE techniques and associated alerts, returns alert counts
+    and maximum severity. Ordered by alert count descending.
+    """
+    conn = get_connection()
+    cursor = conn.execute(
+        """
+        SELECT 
+            mt.technique_id, 
+            mt.name, 
+            mt.tactic, 
+            COUNT(a.id) AS alert_count,
+            CASE MAX(
+                CASE a.severity
+                    WHEN 'Critical' THEN 4
+                    WHEN 'High' THEN 3
+                    WHEN 'Medium' THEN 2
+                    WHEN 'Low' THEN 1
+                    ELSE 0
+                END
+            )
+                WHEN 4 THEN 'Critical'
+                WHEN 3 THEN 'High'
+                WHEN 2 THEN 'Medium'
+                WHEN 1 THEN 'Low'
+                ELSE 'Low'
+            END AS severity
+        FROM alerts a
+        JOIN mitre_techniques mt ON a.technique_id = mt.technique_id
+        GROUP BY mt.technique_id, mt.name, mt.tactic
+        ORDER BY alert_count DESC
+        """
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+

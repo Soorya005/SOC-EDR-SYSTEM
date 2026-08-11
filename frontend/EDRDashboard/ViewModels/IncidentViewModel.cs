@@ -2,33 +2,36 @@
 using EDRDashboard.Models;
 using EDRDashboard.Services;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace EDRDashboard.ViewModels
 {
     public partial class IncidentViewModel : ObservableObject
     {
-        private readonly MockDataService _dataService = new();
+        private readonly ApiService _apiService = new();
 
         public ObservableCollection<Incident> Incidents { get; } = new();
 
         public IncidentViewModel()
-        {
-            LoadIncidents();
-        }
+{
+    _ = LoadIncidents();
+}
 
-        public void LoadIncidents()
-        {
-            Incidents.Clear();
+        public async Task LoadIncidents()
+{
+    Incidents.Clear();
 
-            foreach (var incident in _dataService.GetIncidents())
-            {
-                Incidents.Add(incident);
-            }
-        }
+    var incidents = await _apiService.GetIncidentsAsync();
 
-        public void Refresh()
-        {
-            LoadIncidents();
-        }
+    foreach (var incident in incidents)
+    {
+        Incidents.Add(incident);
+    }
+}
+
+        public async Task Refresh()
+{
+    await LoadIncidents();
+}
     }
 }
