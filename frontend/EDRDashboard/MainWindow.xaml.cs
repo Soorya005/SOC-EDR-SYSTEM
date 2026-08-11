@@ -9,6 +9,7 @@ namespace EDRDashboard
         public MainWindow()
         {
             InitializeComponent();
+            MainNavigation.DataContext = new ViewModels.MainViewModel();
 
             ContentFrame.Navigate(typeof(DashboardPage));
         }
@@ -46,6 +47,10 @@ namespace EDRDashboard
 
                 case "Reports":
                     ContentFrame.Navigate(typeof(ReportsPage));
+                    break;
+
+                case "Settings":
+                    ContentFrame.Navigate(typeof(SettingsPage));
                     break;
 
                 case "Investigations":

@@ -4,128 +4,215 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="Transparent">
 
-    <ScrollViewer>
-
-        <Grid Padding="24">
-
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Padding="24" RowSpacing="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel>
-
+            <!-- Header -->
+            <StackPanel Spacing="4">
                 <TextBlock
                     Text="Settings"
-                    FontSize="32"
-                    FontWeight="Bold"/>
-
+                    Style="{StaticResource SecurityTitleStyle}"/>
                 <TextBlock
-                    Margin="0,5,0,0"
-                    Text="Configure the EDR Investigation Platform"
-                    Opacity="0.7"/>
-
+                    Text="Configure the EDR Platform and view status indicators"
+                    Style="{StaticResource SecuritySubtitleStyle}"/>
             </StackPanel>
 
-            <!-- Backend -->
+            <!-- Grid Layout for Cards -->
+            <Grid Grid.Row="1" ColumnSpacing="20" RowSpacing="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <Border
-                Grid.Row="1"
-                Margin="0,25,0,0"
-                Padding="20"
-                CornerRadius="12"
-                BorderBrush="#404040"
-                BorderThickness="1">
+                <!-- Backend Configuration Card -->
+                <Border
+                    Background="{StaticResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="20">
 
-                <StackPanel Spacing="15">
+                    <StackPanel Spacing="16">
+                        <TextBlock
+                            Text="Backend Configuration"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="White"/>
 
-                    <TextBlock
-                        Text="Backend"
-                        FontSize="20"
-                        FontWeight="Bold"/>
+                        <TextBox
+                            Header="API URL"
+                            Text="{Binding ApiUrl, Mode=TwoWay}"
+                            PlaceholderText="Enter API server base URL..."
+                            HorizontalAlignment="Stretch"/>
 
-                    <TextBox
-                        Header="API URL"
-                        Text="http://localhost:8000"/>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button
+                                Content="Test Connection"
+                                Command="{Binding TestConnectionCommand}"
+                                Style="{StaticResource PrimarySecurityButtonStyle}"
+                                Padding="12,8"/>
+                            <Button
+                                Content="Save"
+                                Command="{Binding SaveSettingsCommand}"
+                                Style="{StaticResource SecurityButtonStyle}"
+                                Padding="12,8"/>
+                        </StackPanel>
 
-                    <Button
-                        Content="Test Connection"
-                        HorizontalAlignment="Left"/>
+                        <TextBlock 
+                            Text="{Binding ConnectionStatusText}" 
+                            Foreground="{Binding ConnectionStatusBrush}" 
+                            FontSize="13" 
+                            FontWeight="Medium"/>
+                    </StackPanel>
+                </Border>
 
-                </StackPanel>
+                <!-- Database Status Card -->
+                <Border
+                    Grid.Column="1"
+                    Background="{StaticResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="20">
 
-            </Border>
+                    <StackPanel Spacing="16">
+                        <TextBlock
+                            Text="Database Status"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="White"/>
 
-            <!-- AI -->
+                        <Grid RowSpacing="12" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-            <Border
-                Grid.Row="2"
-                Margin="0,20,0,0"
-                Padding="20"
-                CornerRadius="12"
-                BorderBrush="#404040"
-                BorderThickness="1">
+                            <TextBlock Text="DB Engine" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="SQLite 3" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
 
-                <StackPanel Spacing="15">
+                            <TextBlock Grid.Row="1" Text="Status" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <Ellipse Width="8" Height="8" Fill="{Binding DatabaseStatusBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding DatabaseStatusText}" Foreground="{Binding DatabaseStatusBrush}" FontSize="12" FontWeight="Bold"/>
+                            </StackPanel>
 
-                    <TextBlock
-                        Text="AI Configuration"
-                        FontSize="20"
-                        FontWeight="Bold"/>
+                            <TextBlock Grid.Row="2" Text="Database File" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="backend/database/edr.db" Foreground="#00D2FF" FontSize="12" FontFamily="Consolas" VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
 
-                    <ComboBox
-                        Header="LLM Provider"
-                        SelectedIndex="0">
+                <!-- AI Configuration Card -->
+                <Border
+                    Grid.Row="1"
+                    Background="{StaticResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="20">
 
-                        <ComboBoxItem Content="OpenAI"/>
-                        <ComboBoxItem Content="Ollama"/>
-                        <ComboBoxItem Content="Azure OpenAI"/>
+                    <StackPanel Spacing="16">
+                        <TextBlock
+                            Text="AI Engine Configuration"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="White"/>
 
-                    </ComboBox>
+                        <ComboBox
+                            Header="LLM Provider"
+                            SelectedIndex="0"
+                            HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="Ollama (Local Llama 3)"/>
+                            <ComboBoxItem Content="OpenAI (GPT-4o) - [NOT CONFIGURED]" IsEnabled="False"/>
+                            <ComboBoxItem Content="Azure OpenAI - [NOT CONFIGURED]" IsEnabled="False"/>
+                        </ComboBox>
 
-                    <ToggleSwitch
-                        Header="Enable AI Summary"
-                        IsOn="True"/>
+                        <Grid Margin="0,4,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Status" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <Ellipse Width="8" Height="8" Fill="{Binding AiStatusBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding AiStatusText}" Foreground="{Binding AiStatusBrush}" FontSize="12" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Grid>
 
-                </StackPanel>
+                        <ToggleSwitch
+                            Header="Enable AI Explanations"
+                            IsOn="True"
+                            Foreground="White"/>
 
-            </Border>
+                        <ToggleSwitch
+                            Header="Automated Recommendations"
+                            IsOn="True"
+                            Foreground="White"/>
+                    </StackPanel>
+                </Border>
 
-            <!-- Appearance -->
+                <!-- Agent/Sysmon configuration -->
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Background="{StaticResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="20">
 
-            <Border
-                Grid.Row="3"
-                Margin="0,20,0,0"
-                Padding="20"
-                CornerRadius="12"
-                BorderBrush="#404040"
-                BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <TextBlock
+                            Text="Endpoint Agent Settings"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="White"/>
 
-                <StackPanel Spacing="15">
+                        <Grid RowSpacing="12" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock
-                        Text="Appearance"
-                        FontSize="20"
-                        FontWeight="Bold"/>
+                            <TextBlock Text="Collector" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="Sysmon Service" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
 
-                    <ToggleSwitch
-                        Header="Dark Mode"
-                        IsOn="True"/>
+                            <TextBlock Grid.Row="1" Text="Health Status" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <Ellipse Width="8" Height="8" Fill="{Binding SysmonStatusBrush}" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding SysmonStatusText}" Foreground="{Binding SysmonStatusBrush}" FontSize="12" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Grid>
 
-                    <ToggleSwitch
-                        Header="Show Notifications"
-                        IsOn="True"/>
-
-                </StackPanel>
-
-            </Border>
-
+                        <ToggleSwitch
+                            Header="Log Sysmon Events to File"
+                            IsOn="False"
+                            Foreground="White"
+                            Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Grid>
-
     </ScrollViewer>
-
 </Page>

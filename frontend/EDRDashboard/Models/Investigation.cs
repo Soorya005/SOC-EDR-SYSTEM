@@ -1,8 +1,12 @@
-﻿namespace EDRDashboard.Models
+namespace EDRDashboard.Models
 {
     public class Investigation
     {
         public string AlertTitle { get; set; } = "";
+
+        public string AlertId { get; set; } = "";
+
+        public string Host { get; set; } = "";
 
         public string Severity { get; set; } = "";
 

@@ -1,31 +1,79 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:EDRDashboard.Converters">
 
-    <!-- Colors -->
+    <converters:SeverityToColorConverter x:Key="SeverityToColorConverter"/>
+    <converters:ReportStatusToColorConverter x:Key="ReportStatusToColorConverter"/>
+    <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <converters:OnlineStatusToColorConverter x:Key="OnlineStatusToColorConverter"/>
+    <converters:OnlineStatusToTextConverter x:Key="OnlineStatusToTextConverter"/>
 
-    <SolidColorBrush x:Key="CardBackgroundBrush"
-                     Color="#252526"/>
+    <!-- Theme Colors -->
+    <Color x:Key="BgDarkColor">#0A0B0D</Color>
+    <Color x:Key="CardBgColor">#12141C</Color>
+    <Color x:Key="BorderColor">#1E222B</Color>
+    <Color x:Key="AccentCyanColor">#00D2FF</Color>
+    
+    <Color x:Key="CriticalColor">#EF4444</Color>
+    <Color x:Key="HighColor">#F97316</Color>
+    <Color x:Key="MediumColor">#FBBF24</Color>
+    <Color x:Key="LowColor">#6B7280</Color>
+    <Color x:Key="HealthyColor">#10B981</Color>
 
-    <SolidColorBrush x:Key="CardBorderBrush"
-                     Color="#4B4B4B"/>
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="BgDarkBrush" Color="{StaticResource BgDarkColor}"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource CardBgColor}"/>
+    <SolidColorBrush x:Key="CardBorderBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="AccentCyanBrush" Color="{StaticResource AccentCyanColor}"/>
+    <SolidColorBrush x:Key="TitleBrush" Color="White"/>
+    <SolidColorBrush x:Key="SubtitleBrush" Color="#9CA3AF"/>
 
-    <SolidColorBrush x:Key="CriticalBrush"
-                     Color="#E74C3C"/>
+    <!-- Severity Brushes -->
+    <SolidColorBrush x:Key="CriticalBrush" Color="{StaticResource CriticalColor}"/>
+    <SolidColorBrush x:Key="HighBrush" Color="{StaticResource HighColor}"/>
+    <SolidColorBrush x:Key="MediumBrush" Color="{StaticResource MediumColor}"/>
+    <SolidColorBrush x:Key="LowBrush" Color="{StaticResource LowColor}"/>
+    <SolidColorBrush x:Key="HealthyBrush" Color="{StaticResource HealthyColor}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource HealthyColor}"/>
 
-    <SolidColorBrush x:Key="HighBrush"
-                     Color="#F39C12"/>
+    <!-- Severity Badges Styling -->
+    <Style x:Key="SeverityBadgeStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Padding" Value="6,2"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
 
-    <SolidColorBrush x:Key="MediumBrush"
-                     Color="#3498DB"/>
+    <!-- Flat Security Button Style -->
+    <Style x:Key="SecurityButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="#161A22"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="16,8"/>
+    </Style>
+    
+    <Style x:Key="PrimarySecurityButtonStyle" TargetType="Button" BasedOn="{StaticResource SecurityButtonStyle}">
+        <Setter Property="Background" Value="#002D3D"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentCyanBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentCyanBrush}"/>
+    </Style>
 
-    <SolidColorBrush x:Key="SuccessBrush"
-                     Color="#2ECC71"/>
+    <!-- Text Styles -->
+    <Style x:Key="SecurityTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TitleBrush}"/>
+        <Setter Property="FontFamily" Value="Segoe UI, Inter, Arial"/>
+    </Style>
 
-    <SolidColorBrush x:Key="TitleBrush"
-                     Color="White"/>
-
-    <SolidColorBrush x:Key="SubtitleBrush"
-                     Color="#B0B0B0"/>
-
+    <Style x:Key="SecuritySubtitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource SubtitleBrush}"/>
+        <Setter Property="Opacity" Value="0.85"/>
+        <Setter Property="FontFamily" Value="Segoe UI, Inter, Arial"/>
+    </Style>
 </ResourceDictionary>

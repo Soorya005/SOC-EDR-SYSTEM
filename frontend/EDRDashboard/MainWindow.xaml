@@ -8,51 +8,107 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Title="EDRDashboard">
+    Title="SOC-EDR SYSTEM">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid>
+    <Grid Background="#0A0B0D">
 
         <muxc:NavigationView
-        x:Name="MainNavigation"
-        PaneTitle="SOC EDR"
-        IsBackButtonVisible="Collapsed"
-        IsSettingsVisible="True"
-        SelectionChanged="MainNavigation_SelectionChanged">
+            x:Name="MainNavigation"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            PaneDisplayMode="Left"
+            IsPaneToggleButtonVisible="False"
+            OpenPaneLength="260"
+            Background="#0A0B0D"
+            SelectionChanged="MainNavigation_SelectionChanged">
 
-            <NavigationView.MenuItems>
+            <muxc:NavigationView.Resources>
+                <!-- Navigation Pane Background -->
+                <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="#08090C"/>
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#08090C"/>
+                
+                <!-- Selection Indicator -->
+                <SolidColorBrush x:Key="NavigationViewItemSelectionIndicatorForeground" Color="#00D2FF"/>
+                
+                <!-- Selected State -->
+                <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="#121620"/>
+                <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="#00D2FF"/>
+                <SolidColorBrush x:Key="NavigationViewItemIconForegroundSelected" Color="#00D2FF"/>
+                
+                <!-- Hover/PointerOver Selected -->
+                <SolidColorBrush x:Key="NavigationViewItemBackgroundSelectedPointerOver" Color="#181D2A"/>
+                <SolidColorBrush x:Key="NavigationViewItemForegroundSelectedPointerOver" Color="#00D2FF"/>
+                <SolidColorBrush x:Key="NavigationViewItemIconForegroundSelectedPointerOver" Color="#00D2FF"/>
+                
+                <!-- Hover/PointerOver Unselected -->
+                <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="#111319"/>
+                <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="White"/>
+                <SolidColorBrush x:Key="NavigationViewItemIconForegroundPointerOver" Color="White"/>
+                
+                <!-- Unselected State -->
+                <SolidColorBrush x:Key="NavigationViewItemForeground" Color="#9CA3AF"/>
+                <SolidColorBrush x:Key="NavigationViewItemIconForeground" Color="#9CA3AF"/>
+            </muxc:NavigationView.Resources>
 
-                <NavigationViewItem
-        Content="Dashboard"
-        Icon="Home"
-        Tag="Dashboard"/>
+            <muxc:NavigationView.PaneHeader>
+                <StackPanel Padding="24,28,16,16" Spacing="4">
+                    <TextBlock Text="SOC-EDR SYSTEM" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="White"
+                               CharacterSpacing="120"/>
+                    <TextBlock Text="v 2.4.0" 
+                               FontSize="11" 
+                               Foreground="#6B7280"
+                               Margin="0,0,0,8"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Ellipse Width="8" Height="8" Fill="{Binding SystemStatusDotColor}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding SystemStatusText}" 
+                                   FontSize="12" 
+                                   Foreground="{Binding SystemStatusColor}" 
+                                   FontWeight="Medium"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </muxc:NavigationView.PaneHeader>
 
-                <NavigationViewItem
-        Content="Alerts"
-        Icon="Important"
-        Tag="Alerts"/>
+            <muxc:NavigationView.MenuItems>
+                <muxc:NavigationViewItem
+                    Content="Dashboard"
+                    Icon="Home"
+                    Tag="Dashboard"/>
 
-                <NavigationViewItem
-        Content="Incidents"
-        Icon="Library"
-        Tag="Incidents"/>
+                <muxc:NavigationViewItem
+                    Content="Alerts"
+                    Icon="Important"
+                    Tag="Alerts"/>
 
-                <NavigationViewItem
-        Content="MITRE ATT&amp;CK"
-        Icon="World"
-        Tag="Mitre"/>
+                <muxc:NavigationViewItem
+                    Content="Incidents"
+                    Icon="Library"
+                    Tag="Incidents"/>
 
-                <NavigationViewItem
-        Content="Reports"
-        Icon="Document"
-        Tag="Reports"/>
-            </NavigationView.MenuItems>
+                <muxc:NavigationViewItem
+                    Content="MITRE ATT&amp;CK"
+                    Icon="World"
+                    Tag="Mitre"/>
+
+                <muxc:NavigationViewItem
+                    Content="Reports"
+                    Icon="Document"
+                    Tag="Reports"/>
+
+                <muxc:NavigationViewItem
+                    Content="Settings"
+                    Icon="Setting"
+                    Tag="Settings"/>
+            </muxc:NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame"/>
-
         </muxc:NavigationView>
 
     </Grid>

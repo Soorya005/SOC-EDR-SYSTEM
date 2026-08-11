@@ -59,7 +59,7 @@ private void ExportSelected()
 
     Debug.WriteLine($"Selected Report: {SelectedReport.ReportName}");
 
-    var url = $"http://localhost:8000/reports/download/{SelectedReport.ReportName}";
+    var url = $"http://127.0.0.1:8000/reports/download/{SelectedReport.ReportName}";
 
     Process.Start(new ProcessStartInfo
     {

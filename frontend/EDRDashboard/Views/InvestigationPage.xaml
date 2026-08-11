@@ -4,268 +4,291 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="Transparent">
 
-    <ScrollViewer>
-
-        <Grid Padding="24">
-
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Padding="24" RowSpacing="20">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
-
+            <!-- Top Row: Back Button, Header, Action Buttons -->
             <Grid>
-
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel>
-
+                <StackPanel Spacing="6">
                     <Button
-                        Content="← Back"
+                        Content="← Back to Alerts"
+                        Style="{StaticResource SecurityButtonStyle}"
+                        Padding="10,6"
                         Click="BackButton_Click"
                         HorizontalAlignment="Left"/>
 
                     <TextBlock
-                        Margin="0,20,0,0"
-                        Text="{Binding Current.AlertTitle}"
-                        FontSize="32"
-                        FontWeight="Bold"/>
+                        Margin="0,8,0,0"
+                        Text="Alert Investigation"
+                        Style="{StaticResource SecurityTitleStyle}"/>
 
-                    <TextBlock
-                        Margin="0,5,0,0"
-                        Text="{Binding Current.Time}"
-                        Opacity="0.6"/>
-
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="ID:" Foreground="#6B7280" FontSize="13"/>
+                        <TextBlock Text="{Binding Current.AlertId}" Foreground="{StaticResource AccentCyanBrush}" FontWeight="SemiBold" FontSize="13"/>
+                    </StackPanel>
                 </StackPanel>
 
-                <Border
-                    Grid.Column="1"
-                    Padding="15,8"
-                    CornerRadius="10"
-                    Background="#B71C1C"
-                    VerticalAlignment="Center">
-
-                    <TextBlock
-                        Text="{Binding Current.Severity}"
-                        Foreground="White"
-                        FontWeight="Bold"/>
-
-                </Border>
-
             </Grid>
 
-            <!-- Body -->
-
-            <Grid
+            <!-- Sub-Header Status Metadata Row -->
+            <Border
                 Grid.Row="1"
-                Margin="0,25,0,0"
-                ColumnSpacing="20"
-                RowSpacing="20">
+                Background="{StaticResource CardBackgroundBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="16">
 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Rule -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="DETECTION RULE" FontSize="10" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <TextBlock Text="{Binding Current.AlertTitle}" FontSize="13" Foreground="White" FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <!-- Severity -->
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="SEVERITY" FontSize="10" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <Border Background="Transparent" 
+                                BorderBrush="{Binding Current.Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                Style="{StaticResource SeverityBadgeStyle}"
+                                HorizontalAlignment="Left"
+                                Margin="0,2,0,0">
+                            <TextBlock Text="{Binding Current.Severity}" 
+                                       Foreground="{Binding Current.Severity, Converter={StaticResource SeverityToColorConverter}}" 
+                                       FontSize="11" 
+                                       FontWeight="Bold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Status -->
+                    <StackPanel Grid.Column="2" Spacing="4">
+                        <TextBlock Text="STATUS" FontSize="10" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <TextBlock Text="{Binding Current.Status}" FontSize="13" Foreground="White" FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <!-- Host -->
+                    <StackPanel Grid.Column="3" Spacing="4">
+                        <TextBlock Text="HOST" FontSize="10" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <TextBlock Text="{Binding Current.Host}" FontSize="13" Foreground="White" FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <!-- Created -->
+                    <StackPanel Grid.Column="4" Spacing="4">
+                        <TextBlock Text="CREATED" FontSize="10" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                        <TextBlock Text="{Binding Current.Time}" FontSize="13" Foreground="White" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Two Column Body -->
+            <Grid Grid.Row="2" ColumnSpacing="20">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="220"/>
-                    <RowDefinition Height="180"/>
-                    <RowDefinition Height="260"/>
-                </Grid.RowDefinitions>
+                <!-- Left Column: Details, MITRE & Event Log -->
+                <StackPanel Spacing="20">
+                    
+                    <!-- Alert Details Card -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                <!-- AI -->
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Alert Details" FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+                            
+                            <Grid RowSpacing="12" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                <Border
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderThickness="1"
-                    BorderBrush="#404040">
+                                <TextBlock Text="Process Name" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Current.Process}" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
 
-                    <StackPanel>
+                                <TextBlock Grid.Row="1" Text="Parent Process" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Current.ParentProcess}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
 
-                        <TextBlock
-                            Text="AI Investigation Summary"
-                            FontSize="20"
-                            FontWeight="Bold"/>
+                                <TextBlock Grid.Row="2" Text="Command Line" Foreground="#6B7280" FontSize="13" VerticalAlignment="Top" Margin="0,4,0,0"/>
+                                <Border Grid.Row="2" Grid.Column="1" Background="#161A22" CornerRadius="2" Padding="10" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
+                                    <TextBlock Text="{Binding Current.CommandLine}" FontFamily="Consolas" FontSize="12" Foreground="#00D2FF" TextWrapping="Wrap"/>
+                                </Border>
 
-                        <TextBlock
-                            Margin="0,15,0,0"
-                            TextWrapping="Wrap"
-                            Text="{Binding Current.AiSummary}"/>
+                                <TextBlock Grid.Row="3" Text="Sigma Rule" Foreground="#6B7280" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Current.SigmaRule}" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-                    </StackPanel>
+                    <!-- MITRE ATT&CK Context Card -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                </Border>
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="MITRE ATT&amp;CK Context" FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                <!-- Summary -->
+                                <Border Background="#161A22" CornerRadius="2" BorderBrush="{StaticResource AccentCyanBrush}" BorderThickness="1" Padding="12,8">
+                                    <TextBlock Text="{Binding Current.Technique}" Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold" FontSize="13"/>
+                                </Border>
 
-                <Border
-                    Grid.Column="1"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderThickness="1"
-                    BorderBrush="#404040">
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="TACTIC" FontSize="10" Foreground="#6B7280" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding Current.Tactic}" Foreground="White" FontSize="13" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-                    <StackPanel>
+                    <!-- Raw Event Log -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                        <TextBlock
-                            Text="Alert Summary"
-                            FontSize="20"
-                            FontWeight="Bold"/>
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Raw Event Log (Sysmon)" FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+                            <Border Background="#0A0B0D" CornerRadius="2" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1" Padding="12">
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="200">
+                                    <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#9CA3AF" TextWrapping="Wrap">
+                                        <Run Text="{Binding Current.CommandLine, Mode=OneWay}"/>
+                                        <Run Text="&#x0a;-- ProcessGuid: {A1B2C3D4-5EF6-7890-1234-567890ABCDEF}"/>
+                                        <Run Text="&#x0a;-- Image: C:\Windows\System32\powershell.exe"/>
+                                        <Run Text="&#x0a;-- EventType: ProcessCreate"/>
+                                    </TextBlock>
+                                </ScrollViewer>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
 
-                        <TextBlock Margin="0,15,0,0">
-                            <Run Text="Status : "/>
-                            <Run Text="{Binding Current.Status}"/>
-                        </TextBlock>
+                <!-- Right Column: AI Analysis & Incident -->
+                <StackPanel Grid.Column="1" Spacing="20">
+                    
+                    <!-- AI Analysis Engine Card -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                        <TextBlock>
-                            <Run Text="Technique : "/>
-                            <Run Text="{Binding Current.Technique}"/>
-                        </TextBlock>
+                        <StackPanel Spacing="16">
+                            <Grid>
+                                <TextBlock Text="AI Analysis Engine" FontSize="15" FontWeight="SemiBold" Foreground="White"/>
+                                <Border Grid.Column="1" Background="#002D3D" BorderBrush="{StaticResource AccentCyanBrush}" BorderThickness="1" CornerRadius="2" Padding="6,2" HorizontalAlignment="Right">
+                                    <TextBlock Text="High Confidence" Foreground="{StaticResource AccentCyanBrush}" FontSize="10" FontWeight="Bold"/>
+                                </Border>
+                            </Grid>
 
-                        <TextBlock>
-                            <Run Text="Tactic : "/>
-                            <Run Text="{Binding Current.Tactic}"/>
-                        </TextBlock>
+                            <!-- AI Execution Summary -->
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="EXECUTION SUMMARY" FontSize="10" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                                <TextBlock Text="{Binding Current.AiSummary}" Foreground="#9CA3AF" FontSize="13" TextWrapping="Wrap" LineHeight="20"/>
+                            </StackPanel>
 
-                    </StackPanel>
+                            <!-- Recommended Actions -->
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="RECOMMENDED ACTIONS" FontSize="10" Foreground="#6B7280" FontWeight="Bold" CharacterSpacing="0.5"/>
+                                
+                                <TextBlock Text="• Isolate WIN-DC-01 from network" FontSize="13" Foreground="#9CA3AF"/>
+                                <TextBlock Text="• Block IP 192.168.1.105 on firewall" FontSize="13" Foreground="#9CA3AF"/>
+                                <TextBlock Text="• Extract memory dump of process" FontSize="13" Foreground="#9CA3AF"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
 
-                </Border>
+                    <!-- Related Incident Card -->
+                    <Border
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="20">
 
-                <!-- MITRE -->
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Related Incident" FontSize="15" FontWeight="SemiBold" Foreground="White"/>
 
-                <Border
-                    Grid.Row="1"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderThickness="1"
-                    BorderBrush="#404040">
+                            <Border Background="#161A22" CornerRadius="4" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1" Padding="16">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                    <StackPanel>
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="INC-2023-142" Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold" FontSize="15"/>
+                                        <TextBlock Text="ACTIVE BREACH ATTEMPT" Foreground="#9CA3AF" FontSize="11" FontWeight="Medium"/>
+                                    </StackPanel>
 
-                        <TextBlock
-                            Text="MITRE ATT&amp;CK"
-                            FontSize="20"
-                            FontWeight="Bold"/>
+                                    <Border Grid.Column="1" Background="#002D3D" CornerRadius="2" Padding="8,4" VerticalAlignment="Center">
+                                        <TextBlock Text="OPEN" Foreground="{StaticResource AccentCyanBrush}" FontSize="11" FontWeight="Bold"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
 
-                        <TextBlock
-                            Margin="0,15,0,0"
-                            Text="{Binding Current.Technique}"/>
+                            <Grid ColumnSpacing="12" Margin="0,4,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                        <TextBlock
-                            Text="{Binding Current.Tactic}"/>
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="Total Alerts" FontSize="11" Foreground="#6B7280"/>
+                                    <TextBlock Text="14" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                                </StackPanel>
 
-                    </StackPanel>
-
-                </Border>
-
-                <!-- Sigma -->
-
-                <Border
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderThickness="1"
-                    BorderBrush="#404040">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            Text="Sigma Rule"
-                            FontSize="20"
-                            FontWeight="Bold"/>
-
-                        <TextBlock
-                            Margin="0,15,0,0"
-                            Text="{Binding Current.SigmaRule}"/>
-
-                    </StackPanel>
-
-                </Border>
-
-                <!-- Steps -->
-
-                <Border
-                    Grid.Row="2"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderThickness="1"
-                    BorderBrush="#404040">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            Text="Investigation Steps"
-                            FontSize="20"
-                            FontWeight="Bold"/>
-
-                        <TextBlock Margin="0,15,0,0"
-                                   Text="✔ Decode PowerShell command"/>
-
-                        <TextBlock
-                            Text="✔ Review Parent Process"/>
-
-                        <TextBlock
-                            Text="✔ Review Child Processes"/>
-
-                        <TextBlock
-                            Text="✔ Review Network Activity"/>
-
-                        <TextBlock
-                            Text="✔ Isolate Endpoint"/>
-
-                    </StackPanel>
-
-                </Border>
-
-                <!-- Raw Event -->
-
-                <Border
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Padding="20"
-                    CornerRadius="12"
-                    BorderThickness="1"
-                    BorderBrush="#404040">
-
-                    <StackPanel>
-
-                        <TextBlock
-                            Text="Raw Sysmon Event"
-                            FontSize="20"
-                            FontWeight="Bold"/>
-
-                        <TextBlock Margin="0,15,0,0">
-                            <Run Text="Process : "/>
-                            <Run Text="{Binding Current.Process}"/>
-                        </TextBlock>
-
-                        <TextBlock>
-                            <Run Text="Parent : "/>
-                            <Run Text="{Binding Current.ParentProcess}"/>
-                        </TextBlock>
-
-                        <TextBlock
-                            TextWrapping="Wrap">
-                            <Run Text="Command : "/>
-                            <Run Text="{Binding Current.CommandLine}"/>
-                        </TextBlock>
-
-                    </StackPanel>
-
-                </Border>
-
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                    <TextBlock Text="Hosts Affected" FontSize="11" Foreground="#6B7280"/>
+                                    <TextBlock Text="2" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
             </Grid>
-
         </Grid>
-
     </ScrollViewer>
-
 </Page>

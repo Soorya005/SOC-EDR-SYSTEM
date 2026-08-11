@@ -208,9 +208,28 @@ def get_alert(alert_uuid: str):
 
     cursor = conn.execute(
         """
-        SELECT *
-        FROM alerts
-        WHERE id = ?
+        SELECT 
+            a.id,
+            a.rule_name,
+            a.severity,
+            a.status,
+            a.technique_id,
+            a.event_id,
+            a.incident_id,
+            a.ai_explanation,
+            a.ai_recommendations,
+            a.created_at,
+            a.updated_at,
+            e.host,
+            e.process_name,
+            e.parent_process,
+            e.command_line,
+            mt.name AS technique_name,
+            mt.tactic
+        FROM alerts a
+        LEFT JOIN events e ON a.event_id = e.id
+        LEFT JOIN mitre_techniques mt ON a.technique_id = mt.technique_id
+        WHERE a.id = ?
         """,
         (alert_uuid,),
     )
@@ -230,18 +249,23 @@ def list_alerts(status=None, severity=None):
 
     conn = get_connection()
 
-    query = "SELECT * FROM alerts WHERE 1=1"
+    query = """
+        SELECT a.*, e.host
+        FROM alerts a
+        LEFT JOIN events e ON a.event_id = e.id
+        WHERE 1=1
+    """
     params = []
 
     if status:
-        query += " AND status = ?"
+        query += " AND a.status = ?"
         params.append(status)
 
     if severity:
-        query += " AND severity = ?"
+        query += " AND a.severity = ?"
         params.append(severity)
 
-    query += " ORDER BY created_at DESC"
+    query += " ORDER BY a.created_at DESC"
 
     cursor = conn.execute(query, params)
 
@@ -250,6 +274,7 @@ def list_alerts(status=None, severity=None):
     conn.close()
 
     return [dict(row) for row in rows]
+
 
 def update_alert_status(alert_id: str, status: str):
     """

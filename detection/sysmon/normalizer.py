@@ -17,6 +17,8 @@ FIELD_MAP = {
     "SourceImage": "source_image",
     "ProcessGuid": "process_guid",
     "User": "user",
+    "GrantedAccess": "granted_access",
+    "CallTrace": "call_trace",
 }
 
 
@@ -29,6 +31,7 @@ def parse_sysmon_xml(xml_string: str) -> dict:
         "event_id": None,
         "host": None,
         "timestamp": None,
+        "event_record_id": None,
     }
     for field in FIELD_MAP.values():
         normalized_event[field] = None
@@ -55,6 +58,10 @@ def parse_sysmon_xml(xml_string: str) -> dict:
             time_elem = system.find(f'{ns}TimeCreated')
             if time_elem is not None:
                 normalized_event["timestamp"] = time_elem.get("SystemTime")
+
+            record_id_elem = system.find(f'{ns}EventRecordID')
+            if record_id_elem is not None and record_id_elem.text:
+                normalized_event["event_record_id"] = int(record_id_elem.text)
 
         if event_data is not None:
             for data in event_data.findall(f'{ns}Data'):
